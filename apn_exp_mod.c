@@ -106,10 +106,10 @@ void apn_modinv(apn_s* inv, const apn_s* a, const apn_s* mod) {
     apz_assign_n(&gcd, a);
     apz_assign_n(&b, mod);
 
-    apn_assign_dig(&x0.magn, 1);
-    apn_assign_dig(&x1.magn, 0);
+    apn_assign_dig(&x0.magnitude, 1);
+    apn_assign_dig(&x1.magnitude, 0);
 
-    while(!apn_is_zero(&b.magn)) {
+    while(!apn_is_zero(&b.magnitude)) {
         apz_div(&q, &r, &gcd, &b);
         apz_assign(&gcd, &b);
         apz_assign(&b, &r);
