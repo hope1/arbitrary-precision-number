@@ -225,15 +225,14 @@ static inline ap_dig_t apn_div_aux_fast(apn_s* rem, const apn_s* op1, const apn_
     apn_s t, r;
     apn_init_list(&t, &r, NULL);
     apn_assign(&r, op1);
-
     ap_dig_t q = 0;
     while(true) { // break later
-        bool f = (r._size != op2->_size);
+        bool f = (r._size > op2->_size);
         struct ap_dig_pair a = { .lo = r._data[r._size - f - 1],
                                  .hi = f ? r._data[r._size - 1] : 0 };
         ap_dig_t b = op2->_data[op2->_size - 1] + 1;
 
-        if(!a.hi && a.lo < b)
+        if(r._size < op2->_size || (!a.hi && a.lo < b))
             break;
 
         ap_dig_t v = ap_dig_div_2d1t1(a, b);
@@ -242,8 +241,7 @@ static inline ap_dig_t apn_div_aux_fast(apn_s* rem, const apn_s* op1, const apn_
         apn_mul(&t, &t, op2);
         apn_sub(&r, &r, &t);
     }
-    // r < op2 is guaranteed by terminal condition, however they might be equal
-    if(apn_cmp(&r, op2) == 0) {
+    if(apn_cmp(&r, op2) >= 0) {
         ++q;
         apn_sub(&r, &r, op2);
     }
@@ -257,13 +255,13 @@ static inline ap_dig_t apn_div_aux_fast(apn_s* rem, const apn_s* op1, const apn_
 void apn_div(apn_s* dest_quot, apn_s* dest_rem, const apn_s* op1, const apn_s* op2) {
     apn_s quot, rem;
     apn_init_list(&quot, &rem, NULL);
-
     // msb to lsb
     size_t i = op1->_size - 1;
     do {
         apn_shl(&rem, &rem, 1);
         rem._data[0] = op1->_data[i];
         ap_dig_t tq = 0; // current digit of quotient
+        
         if(apn_cmp(&rem, op2) >= 0)
             tq = apn_div_aux_fast(&rem, &rem, op2);
         // add to current quotient

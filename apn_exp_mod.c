@@ -65,7 +65,6 @@ void apn_modexp(apn_s* res, const apn_s* base, const apn_s* exp, const apn_s* mo
         apn_sqr(&b, &b);
         apn_div(NULL, &b, &b, mod);
     }
-
     apn_swap(&r, res);
     apn_clear_list(&r, &e, &b, NULL);
 }
