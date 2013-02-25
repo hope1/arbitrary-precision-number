@@ -32,7 +32,7 @@ struct ap_dig_pair {
 };
 
 static inline struct ap_dig_pair ap_dig_mul(ap_dig_t op1, ap_dig_t op2) {
-    size_t half = AP_DIG_BIT >> 1;
+    enum { half = AP_DIG_BIT >> 1 };
     // lo and hi parts of operands
     ap_dig_t al = op1 & ((1ULL << half) - 1), ah = op1 >> half,
              bl = op2 & ((1ULL << half) - 1), bh = op2 >> half;
@@ -47,7 +47,7 @@ static inline struct ap_dig_pair ap_dig_mul(ap_dig_t op1, ap_dig_t op2) {
     res.lo = (al * bl) + (t << half);
     bool locarry = ap_dig_overflow(res.lo, al * bl, t << half);
 
-    res.hi = (ah * bh) + (t >> half) + (tcarry << half) + locarry;
+    res.hi = (ah * bh) + (t >> half) + ((ap_dig_t)tcarry << half) + locarry;
     return res;
 }
 
