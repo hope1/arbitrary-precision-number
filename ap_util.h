@@ -51,4 +51,39 @@ static inline struct ap_dig_pair ap_dig_mul(ap_dig_t op1, ap_dig_t op2) {
     return res;
 }
 
+// 2 / 1 -> 1 division, only quotient is needed
+static inline ap_dig_t ap_dig_div_2d1t1(struct ap_dig_pair a, ap_dig_t b) {
+    // let B = 1 << AP_DIG_BIT, compute (a.hi * B + a.lo) / b,
+    // divide each number x as q = x / b, r = x % b, x = q * b + r.
+    // substitute back to the original formula expands to
+    // qH*B*b + qH*rB + qB*rH + qL + (rH*rB+rL)/b, but qH will alway be 0
+    // since a.hi < b, so the final form is qB*a.hi + qL + (rH*rB+rL)/b.
+    // the term (rH*rB+rL) might be > B so that another 2d1t1 division is
+    // need, this can be done by a tail recursive call which we turn into a
+    // loop easily.
+
+    // B = AP_DIG_MAX + 1
+    ap_dig_t qB = AP_DIG_MAX / b, rB = AP_DIG_MAX % b;
+    if(rB == b - 1)
+        rB = 0, ++qB;
+    else
+        ++rB;
+
+    ap_dig_t res = 0;
+    do {
+        ap_dig_t qL = a.lo / b, rL = a.lo % b;
+        res += a.hi * qB + qL;
+
+        a = ap_dig_mul(a.hi, rB);
+        ap_dig_t s = a.lo;
+
+        a.lo += rL;
+        if(ap_dig_overflow(a.lo, s, rL))
+            ++a.hi;
+    } while(a.hi);
+    res += a.lo / b;
+
+    return res;
+}
+
 #endif // HOPE_BIGNUM_AP_IMPL_H

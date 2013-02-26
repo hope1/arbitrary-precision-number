@@ -178,43 +178,8 @@ void apn_mul_karatsuba(apn_s* res, const apn_s* op1, const apn_s* op2) {
     apn_clear_list(&x0, &x1, &y0, &y1, &z0, &z1, &z2, &t, NULL);
 }
 
-// 2 / 1 -> 1 division, only quotient is needed
-static inline ap_dig_t ap_dig_div_2d1t1(struct ap_dig_pair a, ap_dig_t b) {
-    // let B = 1 << AP_DIG_BIT, compute (a.hi * B + a.lo) / b,
-    // divide each number x as q = x / b, r = x % b, x = q * b + r.
-    // substitute back to the original formula expands to
-    // qH*B*b + qH*rB + qB*rH + qL + (rH*rB+rL)/b, but qH will alway be 0
-    // since a.hi < b, so the final form is qB*a.hi + qL + (rH*rB+rL)/b.
-    // the term (rH*rB+rL) might be > B so that another 2d1t1 division is
-    // need, this can be done by a tail recursive call which we turn into a
-    // loop easily.
-
-    // B = AP_DIG_MAX + 1
-    ap_dig_t qB = AP_DIG_MAX / b, rB = AP_DIG_MAX % b;
-    if(rB == b - 1)
-        rB = 0, ++qB;
-    else
-        ++rB;
-
-    ap_dig_t res = 0;
-    do {
-        ap_dig_t qL = a.lo / b, rL = a.lo % b;
-        res += a.hi * qB + qL;
-
-        a = ap_dig_mul(a.hi, rB);
-        ap_dig_t s = a.lo;
-
-        a.lo += rL;
-        if(ap_dig_overflow(a.lo, s, rL))
-            ++a.hi;
-    } while(a.hi);
-    res += a.lo / b;
-
-    return res;
-}
-
 // [op1 / op2], where the quotient is a single digit
-static inline ap_dig_t apn_div_aux_fast(apn_s* rem, const apn_s* op1, const apn_s* op2) {
+static inline ap_dig_t apn_div_aux(apn_s* rem, const apn_s* op1, const apn_s* op2) {
     // Let A denote the one or two last digit of op1 depending on size of op2,
     // B denote op2[-1] + 1, first guess a approximate quotient by taking [A / B],
     // this result must be <= the real quotient. The difference between real
@@ -263,7 +228,7 @@ void apn_div(apn_s* dest_quot, apn_s* dest_rem, const apn_s* op1, const apn_s* o
         ap_dig_t tq = 0; // current digit of quotient
         
         if(apn_cmp(&rem, op2) >= 0)
-            tq = apn_div_aux_fast(&rem, &rem, op2);
+            tq = apn_div_aux(&rem, &rem, op2);
         // add to current quotient
         apn_shl(&quot, &quot, 1);
         quot._data[0] = tq;
