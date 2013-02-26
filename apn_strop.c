@@ -14,7 +14,7 @@ void precompute_table_max_power(void) {
             t = ap_dig_mul(t.lo, i);
             ++x;
         }
-        if(!t.lo && t.hi == 1)
+        if(!t.lo && t.hi == 1) // exactly 2^AP_DIG_BIT
             max_power[i - 2][0] = AP_DIG_MAX;
         else { // back to last step
             max_power[i - 2][0] = ap_dig_div_2d1t1(t, i) - 1;
