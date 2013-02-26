@@ -8,8 +8,6 @@ static ap_dig_t max_power[35][2]; // max i^x <= 2^AP_DIG_BIT, {i^x - 1, x} is st
 
 void precompute_table_max_power(void) {
     for(int i = 2; i <= 36; ++i) {
-        // NO EVIL FLOATS
-        // max_power[i - 2] = floor(log1p(1 << (AP_DIG_BIT - 1)) / log(i));
         struct ap_dig_pair t = { .lo = i, .hi = 0 };
         ap_dig_t x = 1;
         while(!t.hi) {
