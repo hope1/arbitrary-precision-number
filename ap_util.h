@@ -1,6 +1,8 @@
 #ifndef HOPE_BIGNUM_AP_IMPL_H
 #define HOPE_BIGNUM_AP_IMPL_H
 
+#include "apn.h"
+
 #define Macro_min(Marg_exp1, Marg_exp2) \
     ((Marg_exp1) < (Marg_exp2) ? (Marg_exp1) : (Marg_exp2))
 

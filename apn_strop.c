@@ -14,7 +14,7 @@ void precompute_table_max_power(void) {
             t = ap_dig_mul(t.lo, i);
             ++x;
         }
-        if(!t.lo && t.hi == 1) // exactly 2^AP_DIG_BIT
+        if(!t.lo && t.hi == 1)
             max_power[i - 2][0] = AP_DIG_MAX;
         else { // back to last step
             max_power[i - 2][0] = ap_dig_div_2d1t1(t, i) - 1;
@@ -88,7 +88,7 @@ void apn_to_str(const apn_s* o, char* str, int base) {
         ap_dig_t m = t._data[0];
         
         bool last_iter = (apn_cmp(&v, &b) < 0); // throw preceding zeros
-        for(int i = 0; last_iter ? m : i != x; ++i) {
+        for(ap_dig_t i = 0; last_iter ? m : i != x; ++i) {
             *p++ = alphabet[m % base];
             m /= base;
         }
@@ -103,3 +103,4 @@ void apn_to_str(const apn_s* o, char* str, int base) {
         --p, ++str;
     }
 }
+
