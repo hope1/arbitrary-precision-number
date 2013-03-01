@@ -1,6 +1,6 @@
 #include "apn.h"
 #include "apz.h"
-#include "ap_util.h"
+#include "ap_impl.h"
 
 // TODO
 void apn_sqr(apn_s* res, const apn_s* op) {
