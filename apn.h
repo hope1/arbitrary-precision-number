@@ -58,9 +58,11 @@ void apn_mul_basecase(apn_s* res, const apn_s* op1, const apn_s* op2);
 void apn_mul_karatsuba(apn_s* res, const apn_s* op1, const apn_s* op2);
 // quot and rem can be NULL.
 void apn_div(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op2);
+void apn_div_basecase(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op2);
 
 void apn_sqr(apn_s* res, const apn_s* op);
 void apn_exp(apn_s* res, const apn_s* base, const apn_s* exp);
+void apn_exp_dig(apn_s* res, const apn_s* base, ap_dig_t exp);
 void apn_exp_bysqr(apn_s* res, const apn_s* base, const apn_s* exp);
 void apn_modexp(apn_s* res, const apn_s* base, const apn_s* exp, const apn_s* mod);
 

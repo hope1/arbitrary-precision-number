@@ -7,25 +7,6 @@ void apn_sqr(apn_s* res, const apn_s* op) {
     apn_mul(res, op, op);
 }
 
-// Exponentiation by squaring
-void apn_exp_bysqr(apn_s* res, const apn_s* base, const apn_s* exp) {
-    // Left-to-right in exp, 0 = square, 1 = square and multiply by base
-    apn_s b; // store base
-    apn_init(&b);
-    apn_assign(&b, base);
-
-    apn_assign(res, base); // ignore first 1 in exp
-    for(size_t i = exp->_size; i-- != 0;) {
-        for(size_t j = (i == exp->_size - 1) ?
-                       ap_dig_msb(exp->_data[i]) : AP_DIG_BIT; j-- != 0;) {
-            apn_sqr(res, res);
-            if(exp->_data[i] & (1 << j))
-                apn_mul(res, res, &b);
-        }
-    }
-    apn_clear(&b);
-}
-
 void apn_exp(apn_s* res, const apn_s* base, const apn_s* exp) {
     if(exp->_size == 1) {
         switch(exp->_data[0])
@@ -42,6 +23,35 @@ void apn_exp(apn_s* res, const apn_s* base, const apn_s* exp) {
         }
     }
     apn_exp_bysqr(res, base, exp);
+}
+
+void apn_exp_dig(apn_s* res, const apn_s* base, ap_dig_t exp) {
+    if(!exp)
+        apn_assign_dig(res, 1);
+
+    apn_assign(res, base);
+    // by squaring..
+    size_t i = ap_dig_msb(exp);
+    do {
+        apn_sqr(res, res);
+        if(exp & (1 << i))
+            apn_mul(res, res, base);
+    } while(i--);
+}
+
+// Exponentiation by squaring
+// exp != 0
+void apn_exp_bysqr(apn_s* res, const apn_s* base, const apn_s* exp) {
+    // Left-to-right in exp, 0 = square, 1 = square and multiply by base
+    apn_assign(res, base); // ignore first 1 in exp
+    for(size_t i = exp->_size; i-- != 0;) {
+        size_t j = (i == exp->_size - 1) ? ap_dig_msb(exp->_data[i]) : AP_DIG_BIT;
+        do {
+            apn_sqr(res, res);
+            if(exp->_data[i] & (1 << j))
+                apn_mul(res, res, base);
+        } while(i--);
+    }
 }
 
 void apn_modexp(apn_s* res, const apn_s* base, const apn_s* exp, const apn_s* mod) {
