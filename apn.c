@@ -62,6 +62,10 @@ void apn_swap(apn_s* a, apn_s* b) {
 
 void apn_assign_part(apn_s* res, const apn_s* op, size_t start, size_t size) {
     assert(Macro_max(start, start + size) <= op->_size);
+    if(!size) {
+        apn_assign_dig(res, 0);
+        return;
+    }
 
     if(res->_capacity < size)
         apn_realloc(res, size);
@@ -71,7 +75,7 @@ void apn_assign_part(apn_s* res, const apn_s* op, size_t start, size_t size) {
 
 void apn_assign_part_zero(apn_s* res, const apn_s* op, size_t start, size_t size) {
     // fills invalid ranges with 0
-    if(!size || start >= op->_size) {
+    if(start >= op->_size) {
         apn_assign_dig(res, 0);
         return;
     }
