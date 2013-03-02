@@ -50,7 +50,7 @@ void apn_exp_bysqr(apn_s* res, const apn_s* base, const apn_s* exp) {
             apn_sqr(res, res);
             if(exp->_data[i] & (1 << j))
                 apn_mul(res, res, base);
-        } while(i--);
+        } while(j--);
     }
 }
 
