@@ -27,6 +27,7 @@ void apn_clear_list(apn_s* o, ...);
 void apn_swap(apn_s* a, apn_s* b);
 void apn_realloc(apn_s* o, size_t new_capacity);
 void apn_assign(apn_s* res, const apn_s* op);
+// fill invalid range with zero
 void apn_assign_part(apn_s* res, const apn_s* op, size_t start, size_t size);
 void apn_assign_dig(apn_s* o, ap_dig_t dig);
 // 2 <= base <= 36
