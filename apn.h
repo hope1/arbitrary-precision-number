@@ -17,6 +17,8 @@ struct arbitrary_precision_natural {
 typedef struct arbitrary_precision_natural apn_s;
 
 #define APN_MUL_KARATSUBA_THRESHOLD 50
+#define APN_DIV_BZ_THRESHOLD        64
+#define APN_DIV_BZ_BLOCKSIZE        64
 
 void apn_init(apn_s* o);
 void apn_clear(apn_s* o);
@@ -27,8 +29,11 @@ void apn_clear_list(apn_s* o, ...);
 void apn_swap(apn_s* a, apn_s* b);
 void apn_realloc(apn_s* o, size_t new_capacity);
 void apn_assign(apn_s* res, const apn_s* op);
-// fill invalid range with zero
+// asserts valid range
 void apn_assign_part(apn_s* res, const apn_s* op, size_t start, size_t size);
+// fill invalid range with zero
+void apn_assign_part_zero(apn_s* res, const apn_s* op, size_t start, size_t size);
+
 void apn_assign_dig(apn_s* o, ap_dig_t dig);
 // 2 <= base <= 36
 void apn_assign_str(apn_s* o, const char* str, int base);
@@ -60,11 +65,14 @@ void apn_mul_karatsuba(apn_s* res, const apn_s* op1, const apn_s* op2);
 // quot and rem can be NULL.
 void apn_div(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op2);
 void apn_div_basecase(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op2);
+void apn_div_bz(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op2);
+// [op1 / op2]
+void apn_idiv(apn_s* quot, const apn_s* op1, const apn_s* op2); // TODO
 
 void apn_sqr(apn_s* res, const apn_s* op);
 void apn_exp(apn_s* res, const apn_s* base, const apn_s* exp);
 void apn_exp_dig(apn_s* res, const apn_s* base, ap_dig_t exp);
-void apn_exp_bysqr(apn_s* res, const apn_s* base, const apn_s* exp);
+void apn_exp_bysqr(apn_s* res, const apn_s* base, const apn_s* exp); // exp != 0
 void apn_modexp(apn_s* res, const apn_s* base, const apn_s* exp, const apn_s* mod);
 
 void apn_gcd(apn_s* res, const apn_s* op1, const apn_s* op2);
