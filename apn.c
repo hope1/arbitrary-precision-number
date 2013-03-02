@@ -61,17 +61,19 @@ void apn_swap(apn_s* a, apn_s* b) {
 }
 
 void apn_assign_part(apn_s* res, const apn_s* op, size_t start, size_t size) {
-    assert(Macro_max(start, start + size) <= op->_size);
-    if(!size) {
+    // fills invalid ranges with 0
+    if(!size || start >= op->_size) {
         apn_assign_dig(res, 0);
         return;
     }
-
     if(res->_capacity < size)
         apn_realloc(res, size);
 
+    if(start + size > op->_size) // partially invalid
+        size = op->_size - start;
+
     res->_size = size;
-    memcpy(res->_data, op->_data + start, size * sizeof(ap_dig_t));
+    memmove(res->_data, op->_data + start, size * sizeof(ap_dig_t));
 }
 
 void apn_assign(apn_s* res, const apn_s* op) {
@@ -82,3 +84,4 @@ void apn_assign_dig(apn_s* o, ap_dig_t dig) {
     o->_size = 1;
     o->_data[0] = dig;
 }
+
