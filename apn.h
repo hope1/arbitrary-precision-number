@@ -65,7 +65,7 @@ void apn_mul_karatsuba(apn_s* res, const apn_s* op1, const apn_s* op2);
 // quot and rem can be NULL.
 void apn_div(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op2);
 void apn_div_basecase(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op2);
-void apn_div_bz(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op2); // TODO
+void apn_div_bz(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op2);
 // [op1 / op2]
 void apn_idiv(apn_s* quot, const apn_s* op1, const apn_s* op2); // TODO
 
