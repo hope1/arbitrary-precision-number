@@ -2,8 +2,8 @@
 #include "ap_impl.h"
 
 void apn_mul(apn_s* res, const apn_s* op1, const apn_s* op2) {
-    size_t n = Macro_max(op1->_size, op2->_size);
-    if(n < APN_MUL_KARATSUBA_THRESHOLD)
+    size_t n = Macro_min(op1->_size, op2->_size);
+    if(n <= APN_MUL_KARATSUBA_THRESHOLD)
         apn_mul_basecase(res, op1, op2);
     else
         apn_mul_karatsuba(res, op1, op2);
@@ -38,12 +38,11 @@ void apn_mul_karatsuba(apn_s* res, const apn_s* op1, const apn_s* op2) {
     // xy = z2 B^2m + z1 B^m + z0, z0 = x0y0, z1 = x0y1 + x1y0, z2 = x1y1
     // This requires 4 multiplications, but z1 can be calculated as
     // z1 = (x1 + x0)(y1 + y0) - z2 - z0
-    size_t m = Macro_max(op1->_size, op2->_size) / 2; // dividing point
-
-    if(m <= APN_MUL_KARATSUBA_THRESHOLD) { // base case
+    if(Macro_min(op1->_size, op2->_size) <= APN_MUL_KARATSUBA_THRESHOLD) { // base case
         apn_mul_basecase(res, op1, op2);
         return;
     }
+    size_t m = Macro_max(op1->_size, op2->_size) / 2; // dividing point
 
     apn_s x0, x1, y0, y1, z0, z1, z2, t; // result and parts, temp
     apn_init_list(&x0, &x1, &y0, &y1, &z0, &z1, &z2, &t, NULL);
