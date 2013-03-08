@@ -96,10 +96,6 @@ void apn_div_bz_d2n1n(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op
 void apn_div_bz_d3n2n(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op2);
 
 void apn_div_bz(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op2) {
-//    if(op2->_size <= APN_DIV_BZ_THRESHOLD) {
-//        apn_div_basecase(quot, rem, op1, op2);
-//        return;
-//    }
     // r-digit divide by s-digit number
     apn_s A, B, Z, Q, R; // A, B: copy of operands, Q, R: results, Z: temp
     apn_init_list(&A, &B, &Z, &Q, &R, NULL);
@@ -162,7 +158,7 @@ void apn_div_bz(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op2) {
 // Divide a 2n-digit number by a n-digit number, normalized so that
 // base^n/2 <= B < base^n & A < base^n * B.
 void apn_div_bz_d2n1n(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op2) {
-    if(op2->_size & 1 || op2->_size < APN_DIV_BZ_THRESHOLD) {
+    if(op2->_size & 1 || op2->_size <= APN_DIV_BZ_THRESHOLD) {
         apn_div_basecase(quot, rem, op1, op2);
         return;
     }
