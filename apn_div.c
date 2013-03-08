@@ -180,7 +180,7 @@ void apn_div_bz_d2n1n(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op
     apn_add(&N, &N, &R);
     apn_div_bz_d3n2n(&N, &R, &N, op2); // N = Q2
     // return results, Q = [Q1, Q2]
-    apn_shl(&Q, &Q, op2->_size);
+    apn_shl(&Q, &Q, halfn);
     apn_add(&Q, &Q, &N);
     
     if(quot != NULL)
