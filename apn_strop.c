@@ -87,11 +87,12 @@ void apn_to_str(const apn_s* o, char* str, int base) {
         // t < max_power[base - 2] + 1 <= 2^AP_DIG_BIT
         ap_dig_t m = t._data[0];
         
-        bool last_iter = (apn_cmp(&v, &b) < 0); // throw preceding zeros
-        for(ap_dig_t i = 0; last_iter ? m : i != x; ++i) {
+        bool last_iter = apn_is_zero(&v); // throw preceding zeros
+        ap_dig_t i = 0;
+        do {
             *p++ = alphabet[m % base];
             m /= base;
-        }
+        } while(last_iter ? m : ++i != x);
     } while(!apn_is_zero(&v));
 
     apn_clear_list(&b, &v, &t, NULL);
