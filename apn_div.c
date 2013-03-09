@@ -6,11 +6,11 @@
 static inline ap_dig_t apn_div_aux(apn_s* rem, const apn_s* op1, const apn_s* op2) {
     // Let A denote the one or two last digit of op1 depending on size of op2,
     // B denote op2[-1] + 1, first guess a approximate quotient by taking [A / B],
-    // this result must be <= the real quotient. The difference between real
-    // and guessed quotient is op1 / op2 - [A / B] = (op1 - [A / B] * op2) / op2,
-    // which is another such division that can we can apply the same method again.
-    // To obtain the result, the quotient is the sum of [A / B] in each iteration,
-    // and remainder is the difference op1 - [A / B] * op2 at the last iteration.
+    // this result must be <= the real quotient. The error of this guess is
+    // op1 / op2 - [A / B] = (op1 - [A / B] * op2) / op2, which is another such
+    // division that can we can apply the same method again. To obtain the result,
+    // the quotient is the sum of [A / B] in each iteration, and remainder is the
+    // difference op1 - [A / B] * op2 at the last iteration.
     apn_s t, r;
     apn_init_list(&t, &r, NULL);
     apn_assign(&r, op1);
@@ -47,8 +47,10 @@ void apn_div(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op2) {
         return;
     }
     if(apn_cmp(op1, op2) < 0) {
-        apn_assign(rem, op1);
-        apn_assign_dig(quot, 0); 
+        if(rem != NULL)
+            apn_assign(rem, op1);
+        if(quot != NULL)
+            apn_assign_dig(quot, 0); 
         return;
     }
     if(op2->_size < APN_DIV_BZ_THRESHOLD)
