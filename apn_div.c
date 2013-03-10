@@ -232,6 +232,6 @@ void apn_div_bz_d3n2n(apn_s* quot, apn_s* rem, const apn_s* op1, const apn_s* op
         apn_swap(quot, &Q);
     if(rem != NULL)
         apn_swap(rem, &R);
-    apn_clear_list(&Q, &R, &D, &T);
+    apn_clear_list(&Q, &R, &D, &T, NULL);
 }
 
