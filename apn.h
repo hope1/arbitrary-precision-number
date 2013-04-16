@@ -16,9 +16,9 @@ struct arbitrary_precision_natural {
 };
 typedef struct arbitrary_precision_natural apn_s;
 
-#define APN_MUL_KARATSUBA_THRESHOLD 50
-#define APN_DIV_BZ_THRESHOLD        64
-#define APN_DIV_BZ_BLOCKSIZE        64
+#define APN_MUL_KARATSUBA_THRESHOLD 16
+#define APN_DIV_BZ_THRESHOLD        32
+#define APN_DIV_BZ_BLOCKSIZE        32
 
 void apn_init(apn_s* o);
 void apn_clear(apn_s* o);
@@ -74,10 +74,6 @@ void apn_exp(apn_s* res, const apn_s* base, const apn_s* exp);
 void apn_exp_dig(apn_s* res, const apn_s* base, ap_dig_t exp);
 void apn_exp_bysqr(apn_s* res, const apn_s* base, const apn_s* exp); // exp != 0
 void apn_modexp(apn_s* res, const apn_s* base, const apn_s* exp, const apn_s* mod);
-
-void apn_gcd(apn_s* res, const apn_s* op1, const apn_s* op2);
-// apn_gcd(a, mod) = 1, or `a` and `mod` are coprime
-void apn_modinv(apn_s* inv, const apn_s* a, const apn_s* mod);
 
 // low level
 void apn_data_fill_zero(apn_s* o);
